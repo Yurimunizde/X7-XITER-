@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AUXILIO X7 XITER</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: white;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 2px solid red;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      background: #222;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: red;
+    }
+    .panel {
+      display: none;
+    }
+    .panel.active {
+      display: block;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    .slider {
+      width: 100%;
+    }
+    .dropdown {
+      width: 100%;
+      padding: 5px;
+      margin: 10px 0;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .button {
+      width: 100%;
+      padding: 15px;
+      background: red;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="container">
+    <h1>AUXILIO BY @X7XITER</h1>
+    <div class="tabs">
+      <button class="tab active" onclick="showPanel('aimbot')">Aimbot</button>
+      <button class="tab" onclick="showPanel('info')">Info</button>
+    </div>
+    <div id="aimbot" class="panel active">
+      <label><input type="checkbox" checked /> Ativar Aimbot Trick</label>
+      <label><input type="checkbox" checked /> Ativar Aimfov</label>
+      <label>Fov: <span id="fov-value">7</span></label>
+      <input type="range" min="1" max="10" value="7" class="slider" oninput="updateFov(this.value)" />
+      <select class="dropdown">
+        <option>Aimbot Trick</option>
+        <option>Headshot Mode</option>
+        <option>Assist Mode</option>
+      </select>
+      <div class="radio-group">
+        <label><input type="radio" name="tipo" checked /> Ao Atirar</label>
+        <label><input type="radio" name="tipo" /> Ao Olhar</label>
+      </div>
+      <button class="button">INJETAR HACK</button>
+    </div>
+    <div id="info" class="panel">
+      <p style="text-align:center;">BY X7 XITER</p>
+      <p style="text-align:center;">Validade: 20/12/2025</p>
+    </div>
+  </div>
+
+  <script>
+    function showPanel(id) {
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="showPanel('${id}')"]`).classList.add("active");
+      document.getElementById(id).classList.add("active");
+    }
+
+    function updateFov(val) {
+      document.getElementById("fov-value").innerText = val;
+    }
+
+    // Partículas animadas
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    const particles = [];
+    const numParticles = 70;
+
+    for (let i = 0; i < numParticles; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 1,
+        vy: (Math.random() - 0.5) * 1
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < numParticles; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x <= 0 || p.x >= width) p.vx *= -1;
+        if (p.y <= 0 || p.y >= height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+      }
+      for (let i = 0; i < numParticles; i++) {
+        for (let j = i + 1; j < numParticles; j++) {
+          const a = particles[i];
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(255,0,0,${1 - dist / 120})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
